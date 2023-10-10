@@ -1,0 +1,118 @@
+body {
+    background-color: rgba(151, 151, 151, 0.03);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    background-color: #ffffff;
+    width: 100%;
+}
+
+nav .menu {
+    display: flex;
+}
+
+nav .menu li a {
+    line-height: 30px;
+    border-radius: 20px;
+    margin: 0px;
+    padding: 0px 20px;
+    display: flex;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #585858;
+    letter-spacing: 1px;
+}
+
+.searc {
+    display: flex;
+    align-items: center;
+}
+
+.search {
+    margin: 0 10px;
+    min-width: auto;
+    height: 40px;
+    background-color: rgba(131, 128, 128, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    padding: 0px 20px;
+}
+
+.search input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+.search i {
+    color: #3a3a3a;
+}
+
+nav .menu li a:hover {
+    background-color: #242424;
+    color: #ffffff;
+    box-shadow: 5px 10px 30px rgba(53, 53, 53, 0.1);
+    transition: all ease 1s;
+}
+
+button {
+    border: none;
+    background-color: rgba(131, 128, 128, 0.3);
+}
+
+/* Add this CSS to your header.css or a separate CSS file */
+.search {
+    position: relative;
+  }
+  
+  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .suggestions {
+    position: absolute;
+    top: 100%; /* Position the suggestions below the input field */
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px; /* Limit the height of the suggestions dropdown */
+    overflow-y: auto; /* Add scrollbar if the suggestions exceed max-height */
+    z-index: 1; /* Ensure the dropdown appears above other elements */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .suggestions li {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .suggestions li:hover {
+    background-color: #f2f2f2;
+  }
+  

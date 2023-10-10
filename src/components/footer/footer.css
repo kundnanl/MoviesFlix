@@ -1,0 +1,12 @@
+footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    color: #5e5e5e;
+    margin: 10px 0px;
+    font-size: 0.9rem;
+}

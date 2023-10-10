@@ -1,0 +1,583 @@
+import React, { useState } from "react";
+import Header from "./components/header/header";
+import Carousel from "./components/Carousel";
+import MovieCard from "./components/main";
+import Footer from "./components/footer/footer";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "./App.css";
+import SearchResult from './components/search/searchresults';
+
+function App() {
+  
+  const [searchResults, setSearchResults] = useState([]);
+
+  return (
+    <Router>
+      <div className="root">
+        <Header onSearchResults={setSearchResults} />
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <Route path="/search" render={() => <SearchResult searchResults={searchResults} />} />
+        </Switch>
+        <Footer className="footer" />
+      </div>
+    </Router>
+  );
+}
+
+function Home() {
+  return (
+    <>
+      <Carousel className="carousel" />
+      <MovieCard />
+    </>
+  );
+}
+
+export default App;
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+import React, { useEffect, useState } from "react";
+import "./style/Carousel.css";
+import { fetchLatestMovies } from "./api/api";
+
+function Carousel() {
+  const [current, setCurrent] = useState(0);
+  const [autoPlay, setAutoPlay] = useState(true);
+  const [latestMovies, setLatestMovies] = useState([]);
+  let timeOut = null;
+
+  useEffect(() => {
+    fetchLatestMovies()
+      .then((movies) => {
+        setLatestMovies(movies.slice(0, 6));
+      })
+      .catch((error) => { 
+        console.error('Error fetching latest movies:', error);
+      });
+
+    timeOut =
+      autoPlay &&
+      setTimeout(() => {
+        slideRight();
+      }, 2500);
+  });
+
+  const slideRight = () => {
+    setCurrent(current === latestMovies.length - 1 ? 0 : current + 1);
+  };
+
+  const slideLeft = () => {
+    setCurrent(current === 0 ? latestMovies.length - 1 : current - 1);
+  };
+
+  return (
+    <div
+      className="carousel"
+      onMouseEnter={() => {
+        setAutoPlay(false);
+        clearTimeout(timeOut);
+      }}
+      onMouseLeave={() => {
+        setAutoPlay(true);
+      }}
+    >
+      <div className="carousel-text">
+        <h2>Movies Flix</h2>
+        <p>
+          Welcome to the seamless movies experience which shows you the latest
+          movies and allows search capabilities to enhance the movie experience.
+        </p>
+
+      </div>
+      <div className="carousel_wrapper">
+        {latestMovies.map((movie, index) => {
+          return (
+            <div
+              key={index}
+              className={
+                index === current
+                  ? "carousel_card carousel_card-active"
+                  : "carousel_card"
+              }
+            >
+              <img
+                className="card_image"
+                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                alt={movie.title}
+              />
+            </div>
+          );
+        })}
+        <div className="carousel_arrow_left" onClick={slideLeft}>
+          &lsaquo;
+        </div>
+        <div className="carousel_arrow_right" onClick={slideRight}>
+          &rsaquo;
+        </div>
+        <div className="carousel_pagination">
+          {latestMovies.map((_, index) => {
+            return (
+              <div
+                key={index}
+                className={
+                  index == current
+                    ? "pagination_dot pagination_dot-active"
+                    : "pagination_dot"
+                }
+                onClick={() => setCurrent(index)}
+              ></div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Carousel;export const countries = [
+  {
+    image: "/images/brazil.jpg",
+    title: "Brazil",
+  },
+  {
+    image: "/images/china.jpg",
+    title: "China",
+  },
+  {
+    image: "/images/france.jpg",
+    title: "France",
+  },
+  {
+    image: "/images/japan.jpg",
+    title: "Japan",
+  },
+  {
+    image: "/images/norway.jpg",
+    title: "Norway",
+  },
+];
+import React, { useState, useEffect } from 'react';
+import "./style/main.css";
+import { fetchSomeMovies, fetchStreamingAvailability } from './api/api';
+
+function MovieCard() {
+    const [someMovies, setSomeMovies] = useState([]);
+    const [showFullOverview, setShowFullOverview] = useState([]);
+    const [streamingInfo, setStreamingInfo] = useState([]);
+
+    const genreMapping = {
+        12: 'Adventure',
+        16: 'Animation',
+        35: 'Comedy',
+        28: 'Action',
+        80: 'Crime',
+        99: 'Documentary',
+        18: 'Drama',
+        10751: 'Family',
+        14: 'Fantasy',
+        36: 'History',
+        27: 'Horror',
+        10402: 'Music',
+        9648: 'Mystery',
+        10749: 'Romance',
+        878: 'Science Fiction',
+        10770: 'TV Movie',
+        53: 'Thriller',
+        10753: 'War',
+        37: 'Western'
+    };
+
+    useEffect(() => {
+        fetchSomeMovies()
+            .then(async (movies) => {
+                setSomeMovies(movies.slice(0, 20));
+                setShowFullOverview(new Array(20).fill(false));
+
+                // Fetch streaming availability data for each movie
+                const streamingData = await Promise.all(
+                    movies.slice(0, 20).map((movie) => fetchStreamingAvailability(movie.id))
+                );
+
+                setStreamingInfo(streamingData);
+            })
+            .catch((error) => {
+                console.error('Error fetching latest movies:', error);
+            });
+    }, []);
+
+    const toggleOverview = (index) => {
+        const updatedShowFullOverview = [...showFullOverview];
+        updatedShowFullOverview[index] = !updatedShowFullOverview[index];
+        setShowFullOverview(updatedShowFullOverview);
+    };
+
+    return (
+        <div className="container">
+            {someMovies && someMovies.map((movie, index) => (
+                <div className="movie-card" key={index}>
+                    <div className="movie-header" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w300${movie.poster_path})` }}>
+                    </div>
+                    <div className="movie-content">
+                        <div className="movie-content-header">
+                            <a href="">
+                                <h3 className="movie-title">{movie.title}</h3>
+                            </a>
+                            <div className="imax-logo"></div>
+                        </div>
+                        <div className="movie-info">
+                            <div className="info-section">
+                                <label>Release Date</label>
+                                <span>{movie.release_date}</span>
+                            </div>
+                            <div className="info-section">
+                                <label>Ratings</label>
+                                <span>{movie.vote_average}</span>
+                            </div>
+                            <div className="info-section">
+                                <label>Genres</label>
+                                <span>
+                                    {movie.genre_ids.map((genreId) => (
+                                        <span key={genreId}>
+                                            {genreMapping[genreId]}
+                                        </span>
+                                    ))}
+                                </span>
+                            </div>
+                            <div className="info-section">
+                            <label>Streaming Service</label>
+                            <span>
+                                {streamingInfo[index] ? (
+                                    streamingInfo[index].service
+                                ) : (
+                                    'Not available'
+                                )}
+                            </span>
+                        </div>
+                        <div className="info-section">
+                            <label>Streaming Link</label>
+                            <span>
+                                {streamingInfo[index] ? (
+                                    <a href={streamingInfo[index].link} target="_blank" rel="noopener noreferrer">
+                                        Watch on {streamingInfo[index].service}
+                                    </a>
+                                ) : (
+                                    'N/A'
+                                )}
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+                    <div className="movie-content">
+                        <p className="movie-overview">
+                            {showFullOverview[index]
+                                ? movie.overview
+                                : `${movie.overview.slice(0, 150)}...`}
+                            {movie.overview.length > 150 && (
+                                <span className="see-more" onClick={() => toggleOverview(index)}>
+                                    {showFullOverview[index] ? "See Less" : "See More"}
+                                </span>
+                            )}
+                        </p>
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+export default MovieCard;import { latest, some, tmdbHeaders } from './utils';
+
+export async function fetchLatestMovies() {
+  try {
+    const response = await fetch(latest, {
+      headers: tmdbHeaders,
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching latest movies:', error);
+    return [];
+  }
+}
+
+export async function fetchSomeMovies() {
+  try {
+    const response = await fetch(some, {
+      headers: tmdbHeaders,
+    });
+
+    if(!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    return data.results;
+  } catch (error) {
+    console.error(`Error Fetching some Movies ${error}`);
+    return[]
+  }
+}
+
+// Function to fetch streaming availability
+export async function fetchStreamingAvailability(movieId) {
+  try {
+    const response = await fetch(
+      `https://streaming-availability.p.rapidapi.com/get?output_language=en&tmdb_id=movie/${movieId}`,
+      {
+        method: 'GET',
+        headers: {
+          'X-RapidAPI-Key': '',
+          'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
+        },
+      }
+    );
+
+    const streamingInfo = await response.json();
+    console.log(streamingInfo);
+    return streamingInfo;
+  } catch (error) {
+    console.error('Error fetching streaming availability:', error);
+    return null;
+  }
+}
+
+
+export async function fetchSearchmovies(searchText) {
+  try{
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/multi?query=${searchText}&include_adult=false&language=en-US&page=1`, {headers: tmdbHeaders},
+    );
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    console.log(data.results.slice(0,2))
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching latest movies:', error);
+    return [];
+  }
+}export const tmdbApiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlNzk2MDgzODllNGRmMDM4M2MwYmU5OWVjZGQ0M2E3OCIsInN1YiI6IjY0ZmUyYWEzNDU1N2EwMDBlMzY4M2I0MyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.f9WgZG0mps3Ftbnz4JU7W20bI0Zo-rdgc13vgdhD0ZQ';
+export const latest = `https://api.themoviedb.org/3/trending/all/day?language=en-US`;
+export const some = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=en-US&page=1&sort_by=popularity.desc`
+export const tmdbHeaders = {
+    Authorization: `Bearer ${tmdbApiKey}`,
+    accept: 'application/json',
+};
+export const streamingHeaders = {
+    'X-RapidAPI-Key': '2062d37f92msh907d57ddb0ecb01p1ce5dfjsn9d13e1d56a5d',
+    'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com'
+}import React from "react"
+import "./footer.css"
+
+const Footer = () => {
+    return (
+        <footer>
+            <p>Made with Love by Laksh Kundnani</p>
+        </footer>
+
+    )
+}
+
+export default Footer;import React, { useState } from "react";
+import "./header.css";
+import { fetchSearchmovies } from '../api/api';
+import { Link } from "react-router-dom";
+
+const Header = ({ onSearchResults }) => {
+  const [searchText, setSearchText] = useState("");
+  
+  const handleInputChange = (e) => {
+    setSearchText(e.target.value);
+    console.log(`this is the search input ${e.target.value}`);
+  };
+
+  const handleSearchClick = () => {
+    fetchSearchmovies(searchText)
+      .then((results) => {
+        onSearchResults(results); 
+      })
+      .catch((error) => {
+        console.error('Error fetching search results:', error);
+      });
+  };
+
+  return (
+    <div>
+      <nav>
+      <a href="#" className="logo">
+        <img src="icons/logo.png" alt="Logo" />
+      </a>
+      <ul className="menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="#">Movie</a></li>
+        <li><a href="#">TV Show</a></li>
+        <li><a href="#">Hollywood</a></li>
+        <li><a href="#">Horror</a></li>
+      </ul>
+      <Search searchText={searchText} handleInputChange={handleInputChange} handleSearchClick={handleSearchClick} />
+    </nav>
+    </div>
+  );
+};
+
+export const Search = ({ searchText, handleInputChange, handleSearchClick }) => {
+  return (
+    <div className="search">
+      <input
+        type="text"
+        placeholder="Find Your Favourite Movie"
+        value={searchText}
+        onChange={handleInputChange}
+      />
+      <Link to="/search">
+        <button onClick={handleSearchClick}>Search</button>
+      </Link>
+    </div>
+  );
+};
+
+export default Header;import React, { useState } from 'react';
+import "../style/main.css"
+
+const genreMapping = {
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  28: 'Action',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Science Fiction',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10753: 'War',
+  37: 'Western',
+};
+
+const SearchResult = ({ searchResults }) => {
+  const [showFullOverview, setShowFullOverview] = useState([]);
+
+  const toggleOverview = (index) => {
+    const updatedShowFullOverview = [...showFullOverview];
+    updatedShowFullOverview[index] = !updatedShowFullOverview[index];
+    setShowFullOverview(updatedShowFullOverview);
+  };
+
+  const filteredResults = searchResults.filter((movie) => movie.popularity > 10);
+
+  return (
+    <div>
+      <h2>SEARCH RESULTS</h2>
+      <div className="search-results container">
+        {filteredResults.map((movie, index) => (
+            <div className="search-results movie-card" key={index}>
+              <div className="movie-header" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w300${movie.poster_path})` }}>
+              </div>
+              <div className="movie-content">
+                <div className="movie-content-header">
+                  <a href="">
+                    <h3 className="movie-title">{movie.title || 'No Title'}</h3>
+                  </a>
+                  <div className="imax-logo"></div>
+                </div>
+                <div className="movie-info">
+                  <div className="info-section">
+                    <label>Release Date</label>
+                    <span>{movie.release_date || 'Unknown'}</span>
+                  </div>
+                  <div className="info-section">
+                    <label>Ratings</label>
+                    <span>{movie.vote_average || 'N/A'}</span>
+                  </div>
+                  <div className="info-section">
+                    <label>Genres</label>
+                    <span>
+                      {movie.genre_ids &&
+                        movie.genre_ids.map((genreId) => (
+                          <span key={genreId}>
+                            {genreMapping[genreId] || 'Unknown'}
+                          </span>
+                        ))}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="movie-content">
+              <p className="movie-overview">
+                  {movie.overview
+                    ? showFullOverview[index]
+                      ? movie.overview
+                      : `${movie.overview.slice(0, 150)}...`
+                    : 'No overview available'}
+                  {movie.overview && movie.overview.length > 150 && (
+                    <span className="see-more" onClick={() => toggleOverview(index)}>
+                      {showFullOverview[index] ? "See Less" : "See More"}
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+          ))}
+      </div>
+    </div>
+  );
+};
+
+export default SearchResult;

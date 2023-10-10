@@ -1,0 +1,109 @@
+/* Reset some default browser styles */
+body,
+h1,
+h2,
+h3,
+p {
+  padding: 0;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.header p {
+  font-size: 18px;
+}
+
+.carousel {
+  margin-top: 20px;
+}
+
+/* Style the footer */
+.footer {
+  background-color: #333;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footer p {
+  font-size: 14px;
+}
+
+.footer a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+/* Responsive layout - adjust as needed */
+@media (max-width: 768px) {
+  .root {
+    padding: 10px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .header p {
+    font-size: 16px;
+  }
+
+  /* Add responsive styles for carousel and cards as needed */
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  /* Add more responsive styles as needed */
+}
+
+.name {
+  padding: 20px;
+  margin: 20px;
+  border: 2px solid black;
+}
+
+.App {
+  border-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+}
+
+.header {
+  display: flex;
+  background-color: #ffffff;
+}
+
+.carousel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+  width: 100%;
+  max-width: 800px;
+  margin-bottom: 20px;
+}
+
+
+.root {
+  justify-content: center;
+  align-items: center;
+}
+
