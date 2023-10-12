@@ -78,3 +78,24 @@ export async function fetchSearchmovies(searchText) {
     return [];
   }
 }
+
+export async function fetchMovies() {
+  try{
+    console.log("fetching movies")
+    const response = await fetch(
+      `https://api.themoviedb.org/3/trending/movie/day?language=en-US`, {headers: tmdbHeaders},
+    );
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    
+    const data = await response.json();
+    console.log(`these are fetched movies${[data.results.slice(0,2)]}`)
+    console.log(data.results.slice(0,2));
+    return data.results;
+  } catch (error) {
+    console.error('Error fetching latest movies:', error);
+    return [];
+  }
+}

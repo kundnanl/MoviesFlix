@@ -1,27 +1,26 @@
 import React, { useState } from "react";
 import "./header.css";
-import { fetchSearchmovies } from '../api/api';
+import { fetchSearchmovies, fetchMovies } from '../api/api';
 import { Link } from "react-router-dom";
 
-const Header = ({ onSearchResults }) => {
+const Header = ({ onSearchResults, onMovies }) => {
   const [searchText, setSearchText] = useState("");
-  const [loading, setLoading] = useState(false); // Set loading to false initially
+  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
   let searchTimeout;
 
   const handleInputChange = (e) => {
-    clearTimeout(searchTimeout); // Clear any existing timeout
+    clearTimeout(searchTimeout);
 
     const newSearchText = e.target.value;
     setSearchText(newSearchText);
     setLoading(true);
 
-    // Set a new timeout to trigger the search after 500 milliseconds
     searchTimeout = setTimeout(() => {
       fetchSearchmovies(newSearchText)
         .then((results) => {
-          const filteredResults = results.filter((movie) => movie.popularity > 10);
+          const filteredResults = results.filter((movie) => movie.popularity > 5);
           setSuggestions(filteredResults);
           setLoading(false);
         })
@@ -37,7 +36,7 @@ const Header = ({ onSearchResults }) => {
 
     fetchSearchmovies(searchText)
       .then((results) => {
-        onSearchResults(results); 
+        onSearchResults(results);
         setLoading(false);
       })
       .catch((error) => {
@@ -46,11 +45,28 @@ const Header = ({ onSearchResults }) => {
       });
   };
 
+  const handleMovieClick = () => {
+    setLoading(true);
+    console.log(`movies button clicked`);
+    fetchMovies()
+      .then((results) => {
+        onMovies(results);
+        console.log('we are in header movie')
+        console.log(results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(`Error fetching Movies results: `, error);
+        setLoading(false);
+      })
+  }
+
   const handleSuggestionClick = (suggestion) => {
     setSearchText(suggestion.title);
-    setSuggestions([]); // Clear suggestions
+    setSuggestions([]);
     handleSearchClick();
   };
+
 
   return (
     <div>
@@ -59,8 +75,16 @@ const Header = ({ onSearchResults }) => {
           <img src="icons/logo.png" alt="Logo" />
         </a>
         <ul className="menu">
-          <li><a href="/">Home</a></li>
-          <li><a href="#">Movie</a></li>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <Link to="/movie">
+              <a>
+              <button onClick={handleMovieClick} handleMovieClick={handleMovieClick}>Movie</button>
+              </a>
+            </Link>
+          </li>
           <li><a href="#">TV Show</a></li>
           <li><a href="#">Hollywood</a></li>
           <li><a href="#">Horror</a></li>

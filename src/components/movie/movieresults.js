@@ -23,15 +23,16 @@ const genreMapping = {
   37: 'Western',
 };
 
-const SearchResult = ({ searchResults }) => {
+const MovieResult = ({ movieResults }) => {
+  console.log(movieResults);
   const [showFullOverview, setShowFullOverview] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (searchResults.length > 0) {
+    if (movieResults.length > 0) {
       setLoading(false); 
     }
-  }, [searchResults]);
+  }, [movieResults]);
 
 
   const toggleOverview = (index) => {
@@ -40,16 +41,16 @@ const SearchResult = ({ searchResults }) => {
     setShowFullOverview(updatedShowFullOverview);
   };
 
-  const filteredResults = searchResults.filter((movie) => movie.popularity > 5);
+  const filteredResults = movieResults.filter((movie) => movie.popularity > 5);
 
   return (
     <div>
-      <h2>SEARCH RESULTS</h2>
+      <h2>Movies RESULTS</h2>
       {loading ? (
         <span class="loader"></span>
       ) : (
-        <div className="search-results container">
-          {filteredResults.map((movie, index) => (
+        <div className="movie-results container">
+          {filteredResults && filteredResults.map((movie, index) => (
             <div className="search-results movie-card" key={index}>
               <div className="movie-header" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w300${movie.poster_path})` }}>
               </div>
@@ -104,4 +105,4 @@ const SearchResult = ({ searchResults }) => {
   );
 };
 
-export default SearchResult;
+export default MovieResult;
