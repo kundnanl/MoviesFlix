@@ -138,7 +138,7 @@ export const Search = ({ searchText, suggestions, loading, handleInputChange, ha
         <ul className="suggestions">
           {suggestions.map((suggestion, index) => (
             <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion.title}
+              {suggestion.title || suggestion.name}
             </li>
           ))}
         </ul>

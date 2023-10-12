@@ -56,7 +56,7 @@ const SearchResult = ({ searchResults }) => {
               <div className="movie-content">
                 <div className="movie-content-header">
                   <a href="/name">
-                    <h3 className="movie-title">{movie.title || 'No Title'}</h3>
+                    <h3 className="movie-title">{movie.title || movie.name}</h3>
                   </a>
                   <div className="imax-logo"></div>
                 </div>
