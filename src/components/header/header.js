@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./header.css";
-import { fetchSearchmovies, fetchMovies, fetchShows } from '../api/api';
+import { fetchSearchmovies, fetchMovies, fetchShows, fetchStreamingAvailability } from '../api/api';
 import { Link } from "react-router-dom";
 
-const Header = ({ onSearchResults, onMovies, onTVShows }) => {
+const Header = ({ onSearchResults, onMovies, onTVShows,onStreaming }) => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -31,19 +31,28 @@ const Header = ({ onSearchResults, onMovies, onTVShows }) => {
     }, 500);
   };
 
-  const handleSearchClick = () => {
+  const handleSearchClick = async () => {
     setLoading(true);
 
-    fetchSearchmovies(searchText)
-      .then((results) => {
-        onSearchResults(results);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error('Error fetching search results:', error);
-        setLoading(false);
-      });
+    try {
+      const results = await fetchSearchmovies(searchText);
+
+      onSearchResults(results);
+
+      const streamingData = await Promise.all(
+        results.slice(0, 20).map((movie) => fetchStreamingAvailability(movie.id))
+      );
+
+      setStreamingInfo(streamingData);
+      onStreaming(streamingData)
+
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching search results:', error);
+      setLoading(false);
+    }
   };
+
 
   const handleMovieClick = () => {
     setLoading(true);
@@ -51,14 +60,14 @@ const Header = ({ onSearchResults, onMovies, onTVShows }) => {
     fetchMovies()
       .then((results) => {
         onMovies(results);
-        console.log('we are in header movie')
+        console.log('we are in header movie');
         console.log(results);
         setLoading(false);
       })
       .catch((error) => {
         console.error(`Error fetching Movies results: `, error);
         setLoading(false);
-      })
+      });
   }
 
   const handleShowsClick = () => {
@@ -67,14 +76,14 @@ const Header = ({ onSearchResults, onMovies, onTVShows }) => {
     fetchShows()
       .then((results) => {
         onTVShows(results);
-        console.log('we are in header shows')
+        console.log('we are in header shows');
         console.log(results);
         setLoading(false);
       })
       .catch((error) => {
         console.error(`Error fetching Movies results: `, error);
         setLoading(false);
-      })
+      });
   }
 
   const handleSuggestionClick = (suggestion) => {
@@ -82,7 +91,6 @@ const Header = ({ onSearchResults, onMovies, onTVShows }) => {
     setSuggestions([]);
     handleSearchClick();
   };
-
 
   return (
     <div>

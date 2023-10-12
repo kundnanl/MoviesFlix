@@ -55,7 +55,7 @@ function MovieCard() {
     };
 
     return (
-        <div className="container">
+        <div className="">
             {someMovies && someMovies.map((movie, index) => (
                 <div className="movie-card" key={index}>
                     <div className="movie-header" style={{ backgroundImage: `url(https://image.tmdb.org/t/p/w300${movie.poster_path})` }}>

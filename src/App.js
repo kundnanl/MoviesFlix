@@ -14,16 +14,17 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [movies, setMovies] = useState([]);
   const [shows, setTVShows] = useState([]);
+  const [streamingInfo, setStreamingInfo] = useState([]);
 
   return (
     <Router>
       <div className="root">
-        <Header onSearchResults={setSearchResults} onMovies={setMovies} onTVShows={setTVShows}/>
+        <Header onSearchResults={setSearchResults} onMovies={setMovies} onTVShows={setTVShows} onStreaming={setStreamingInfo}/>
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path="/search" render={() => {
             console.log("Rendering SearchResult component");
-            return <SearchResult searchResults={searchResults} />;
+            return <SearchResult searchResults={searchResults} streamingInfo={streamingInfo}/>;
           }} />
           <Route path="/movie" render={() => {
             console.log("Rendering Movies");

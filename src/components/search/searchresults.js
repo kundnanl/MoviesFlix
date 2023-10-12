@@ -23,13 +23,15 @@ const genreMapping = {
   37: 'Western',
 };
 
-const SearchResult = ({ searchResults }) => {
+const SearchResult = ({ searchResults, streamingInfo }) => {
   const [showFullOverview, setShowFullOverview] = useState([]);
   const [loading, setLoading] = useState(true);
+  console.log("This is Streaming Info");
+  console.log(streamingInfo);
 
   useEffect(() => {
     if (searchResults.length > 0) {
-      setLoading(false); 
+      setLoading(false);
     }
   }, [searchResults]);
 
@@ -43,7 +45,7 @@ const SearchResult = ({ searchResults }) => {
   const filteredResults = searchResults.filter((movie) => movie.popularity > 5);
 
   return (
-    <div>
+    <div className=''>
       <h2>SEARCH RESULTS</h2>
       {loading ? (
         <span class="loader"></span>
@@ -72,14 +74,30 @@ const SearchResult = ({ searchResults }) => {
                   <div className="info-section">
                     <label>Genres</label>
                     <span>
-                      {movie.genre_ids &&
-                        movie.genre_ids.map((genreId) => (
+                      {movie.genre_ids.map((genreId) => (
+                        <ul>
                           <span key={genreId}>
-                            {genreMapping[genreId] || 'Unknown'}
+                            <li>
+                              {genreMapping[genreId]}
+                            </li>
                           </span>
-                        ))}
+                        </ul>
+                      ))}
                     </span>
                   </div>
+                  <div className="info-section">
+                    <label>Streaming Link</label>
+                    <span>
+                      {streamingInfo ? (
+                        <a href={streamingInfo[index]}>
+                          Watch on
+                        </a>
+                      ) : (
+                        'N/A'
+                      )}
+                    </span>
+                  </div>
+
                 </div>
               </div>
               <div className="movie-content">

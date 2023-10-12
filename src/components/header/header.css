@@ -37,6 +37,8 @@ nav .logo img {
 nav .menu {
     list-style: none;
     display: flex;
+    flex-wrap: wrap; /* Wrap menu items on smaller screens */
+
 }
 
 nav .menu li {
@@ -67,6 +69,7 @@ Link button {
     margin-left: auto;
     display: flex;
     align-items: center;
+    flex-wrap: wrap; /* Wrap search elements on smaller screens */
 }
 
 .search input[type="text"] {
@@ -117,4 +120,41 @@ Link button {
 
 .search button:hover {
     background-color: #e95c4a;
+}
+
+/* Responsive design for smaller screens (e.g., phones) */
+@media (max-width: 780px) {
+    nav .menu {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
+    nav .logo img {
+        width: 100px;
+    }
+
+    nav .menu li {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    nav .menu li a {
+        font-size: 0.8rem;
+    }
+
+    .search input[type="text"] {
+        max-width: 120px;
+    }
+
+    .search button {
+        padding: 8px 14px;
+    }
+
+    .suggestions li {
+        padding: 6px;
+    }
+
+    .search button {
+        padding: 6px 12px;
+    }
 }
