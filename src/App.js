@@ -6,8 +6,8 @@ import Footer from "./components/footer/footer";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import SearchResult from './components/search/searchresults';
-import MovieResult from "./components/movie/movieresults";
-import ShowResults from "./components/movie/tvShow";
+import MovieResult from "./components/results/movieresults";
+import ShowResults from "./components/results/tvShow";
 
 function App() {
 

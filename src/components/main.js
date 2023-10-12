@@ -35,12 +35,13 @@ function MovieCard() {
                 setSomeMovies(movies.slice(0, 20));
                 setShowFullOverview(new Array(20).fill(false));
 
-                // Fetch streaming availability data for each movie
                 const streamingData = await Promise.all(
                     movies.slice(0, 20).map((movie) => fetchStreamingAvailability(movie.id))
                 );
 
                 setStreamingInfo(streamingData);
+                console.log("this is the link log");
+                console.log(streamingData);
             })
             .catch((error) => {
                 console.error('Error fetching latest movies:', error);
@@ -79,34 +80,28 @@ function MovieCard() {
                                 <label>Genres</label>
                                 <span>
                                     {movie.genre_ids.map((genreId) => (
-                                        <span key={genreId}>
-                                            {genreMapping[genreId]}
-                                        </span>
+                                        <ul>
+                                            <span key={genreId}>
+                                                <li>
+                                                    {genreMapping[genreId]}
+                                                </li>
+                                            </span>
+                                        </ul>
                                     ))}
                                 </span>
                             </div>
                             <div className="info-section">
-                            <label>Streaming Service</label>
-                            <span>
-                                {streamingInfo[index] ? (
-                                    streamingInfo[index].service
-                                ) : (
-                                    'Not available'
-                                )}
-                            </span>
-                        </div>
-                        <div className="info-section">
-                            <label>Streaming Link</label>
-                            <span>
-                                {streamingInfo[index] ? (
-                                    <a href={streamingInfo[index].link} target="_blank" rel="noopener noreferrer">
-                                        Watch on {streamingInfo[index].service}
-                                    </a>
-                                ) : (
-                                    'N/A'
-                                )}
-                            </span>
-                        </div>
+                                <label>Streaming Link</label>
+                                <span>
+                                    {streamingInfo  ? (
+                                        <a href={streamingInfo[index]}>
+                                            Watch on
+                                        </a>
+                                    ) : (
+                                        'N/A'
+                                    )}
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div className="movie-content">

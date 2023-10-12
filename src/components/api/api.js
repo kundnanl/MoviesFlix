@@ -39,19 +39,12 @@ export async function fetchSomeMovies() {
 export async function fetchStreamingAvailability(movieId) {
   try {
     const response = await fetch(
-      `https://streaming-availability.p.rapidapi.com/get?output_language=en&tmdb_id=movie/${movieId}`,
-      {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': '923f1ee0eamsha8564c1d33db28ap1e8faajsne4171e909f70',
-          'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
-        },
-      }
+      `https://api.themoviedb.org/3/movie/${movieId}/watch/providers`, {headers: tmdbHeaders},
     );
 
     const streamingInfo = await response.json();
-    console.log(streamingInfo);
-    return streamingInfo;
+    console.log(streamingInfo.results.CA.link);
+    return streamingInfo.results.CA.link;
   } catch (error) {
     console.error('Error fetching streaming availability:', error);
     return null;

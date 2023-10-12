@@ -44,8 +44,8 @@ const ShowResults = ({ showResults }) => {
   const filteredResults = showResults.filter((movie) => movie.popularity > 5);
 
   return (
-    <div>
-      <h2>Movies RESULTS</h2>
+    <div className='root'>
+      <h2>Latest TV Shows</h2>
       {loading ? (
         <span class="loader"></span>
       ) : (

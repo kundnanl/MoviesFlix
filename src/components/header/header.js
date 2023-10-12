@@ -96,15 +96,15 @@ const Header = ({ onSearchResults, onMovies, onTVShows }) => {
           </li>
           <li>
             <Link to="/movie">
-              <a>
-                <button onClick={handleMovieClick} handleMovieClick={handleMovieClick}>Movie</button>
+              <a onClick={handleMovieClick} handleMovieClick={handleMovieClick}>
+                Movie
               </a>
             </Link>
           </li>
           <li>
-          <Link to="/tvshow">
-              <a>
-              <button onClick={handleShowsClick} handleShowsClick={handleShowsClick}>TV Shows</button>
+            <Link to="/tvshow">
+              <a onClick={handleShowsClick} handleShowsClick={handleShowsClick}>
+                TV Shows
               </a>
             </Link>
           </li>
@@ -133,16 +133,19 @@ export const Search = ({ searchText, suggestions, loading, handleInputChange, ha
         value={searchText}
         onChange={handleInputChange}
       />
-      {loading && <p>Loading...</p>}
-      {suggestions.length > 0 && (
+      {suggestions.length > 0 ? (
         <ul className="suggestions">
-          {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion.title || suggestion.name}
-            </li>
-          ))}
+          {loading ? (
+            <li>Loading...</li>
+          ) : (
+            suggestions.map((suggestion, index) => (
+              <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                {suggestion.title || suggestion.name}
+              </li>
+            ))
+          )}
         </ul>
-      )}
+      ) : null}
       <Link to="/search">
         <button onClick={handleSearchClick}>Search</button>
       </Link>
