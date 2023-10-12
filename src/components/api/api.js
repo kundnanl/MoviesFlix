@@ -36,7 +36,6 @@ export async function fetchSomeMovies() {
   }
 }
 
-// Function to fetch streaming availability
 export async function fetchStreamingAvailability(movieId) {
   try {
     const response = await fetch(
@@ -44,7 +43,7 @@ export async function fetchStreamingAvailability(movieId) {
       {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': '',
+          'X-RapidAPI-Key': '923f1ee0eamsha8564c1d33db28ap1e8faajsne4171e909f70',
           'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
         },
       }
@@ -96,6 +95,26 @@ export async function fetchMovies() {
     return data.results;
   } catch (error) {
     console.error('Error fetching latest movies:', error);
+    return [];
+  }
+}
+
+export async function fetchShows() {
+  try {
+    console.log("Fetching TV Shows");
+    const response = await fetch (
+      `https://api.themoviedb.org/3/trending/tv/day?language=en-US`, {headers: tmdbHeaders},
+    );
+    
+    if (!response.ok) {
+      throw new Error('Network Response for TV Shows was Not okay');
+    }
+
+    const data = await response.json();
+
+    return data.results;
+  } catch(error) {
+    console.error(error);
     return [];
   }
 }

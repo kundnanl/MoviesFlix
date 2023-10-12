@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "./header.css";
-import { fetchSearchmovies, fetchMovies } from '../api/api';
+import { fetchSearchmovies, fetchMovies, fetchShows } from '../api/api';
 import { Link } from "react-router-dom";
 
-const Header = ({ onSearchResults, onMovies }) => {
+const Header = ({ onSearchResults, onMovies, onTVShows }) => {
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
@@ -61,6 +61,22 @@ const Header = ({ onSearchResults, onMovies }) => {
       })
   }
 
+  const handleShowsClick = () => {
+    setLoading(true);
+    console.log(`shows button clicked`);
+    fetchShows()
+      .then((results) => {
+        onTVShows(results);
+        console.log('we are in header shows')
+        console.log(results);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(`Error fetching Movies results: `, error);
+        setLoading(false);
+      })
+  }
+
   const handleSuggestionClick = (suggestion) => {
     setSearchText(suggestion.title);
     setSuggestions([]);
@@ -71,8 +87,8 @@ const Header = ({ onSearchResults, onMovies }) => {
   return (
     <div>
       <nav>
-        <a href="#" className="logo">
-          <img src="icons/logo.png" alt="Logo" />
+        <a href="/" className="logo">
+          <img src="icons/moviesflix.jpg" alt="Logo" />
         </a>
         <ul className="menu">
           <li>
@@ -81,11 +97,17 @@ const Header = ({ onSearchResults, onMovies }) => {
           <li>
             <Link to="/movie">
               <a>
-              <button onClick={handleMovieClick} handleMovieClick={handleMovieClick}>Movie</button>
+                <button onClick={handleMovieClick} handleMovieClick={handleMovieClick}>Movie</button>
               </a>
             </Link>
           </li>
-          <li><a href="#">TV Show</a></li>
+          <li>
+          <Link to="/tvshow">
+              <a>
+              <button onClick={handleShowsClick} handleShowsClick={handleShowsClick}>TV Shows</button>
+              </a>
+            </Link>
+          </li>
           <li><a href="#">Hollywood</a></li>
           <li><a href="#">Horror</a></li>
         </ul>
